@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+	<title>WikiMath » TP/Eigen Faces?</title>
+
+	<meta name="generator" content="PmWiki-2.1.5">
+
+
+<!--HeaderText--><style type='text/css'><!--
+  ul, ol, pre, dl, p { margin-top:0px; margin-bottom:0px; }
+  code.escaped { white-space: nowrap; }
+  .vspace { margin-top:1.33em; }
+  .indent { margin-left:40px; }
+  .outdent { margin-left:40px; text-indent:-40px; }
+  a.createlinktext { text-decoration:none; border-bottom:1px dotted gray; }
+  a.createlink { text-decoration:none; position:relative; top:-0.5em;
+    font-weight:bold; font-size:smaller; border-bottom:none; }
+  img { border:0px; }
+  
+span.anchor {
+	float: left;
+	font-size: 10px;
+	margin-left: -10px;
+	width: 10px;
+    position:relative; top:-0.1em;
+	text-align: center;
+}
+span.anchor a { text-decoration: none; }
+span.anchor a:hover { text-decoration: underline; }
+ol.toc { text-indent:-20px; list-style: none; }
+ol.toc ol.toc { text-indent:-40px; }
+div.tocfloat { font-size: smaller; margin-bottom: 10px;
+    border-top: 1px dotted #555555; border-bottom: 1px dotted #555555;
+    padding-top: 5px; padding-bottom: 5px; 
+    width: 38%; float: right; margin-left: 10px; clear: right;
+    margin-right:-13px; padding-right: 13px; padding-left: 13px;
+    background-color: #eeeeee; }
+div.toc { font-size: smaller; 
+    padding: 5px; border: 1px dotted #cccccc;
+    background: #f7f7f7;
+    margin-bottom: 10px; }
+div.toc p { background-color: #f9f6d6;
+    margin-top:-5px;   padding-top: 5px;
+    margin-left:-5px;  padding-left: 5px;
+    margin-right:-5px; padding-right: 5px;
+    padding-bottom: 3px;
+    border-bottom:  1px dotted #cccccc; }
+div.sectionedit { text-align:right;font-size:smaller;clear:both;}
+.editconflict { color:green; 
+  font-style:italic; margin-top:1.33em; margin-bottom:1.33em; }
+
+  table.markup { border:2px dotted #ccf; width:90%; }
+  td.markup1, td.markup2 { padding-left:10px; padding-right:10px; }
+  table.vert td.markup1 { border-bottom:1px solid #ccf; }
+  table.horiz td.markup1 { width:23em; border-right:1px solid #ccf; }
+  table.markup caption { text-align:left; }
+  div.faq p, div.faq pre { margin-left:2em; }
+  div.faq p.question { margin:1em 0 0.75em 0; font-weight:bold; }
+  div.faqtoc div.faq * { display:none; }
+  div.faqtoc div.faq p.question 
+    { display:block; font-weight:normal; margin:0.5em 0 0.5em 20px; line-height:normal; }
+  div.faqtoc div.faq p.question * { display:inline; }
+   
+    .frame 
+      { border:1px solid #cccccc; padding:4px; background-color:#f9f9f9; }
+    .lfloat { float:left; margin-right:0.5em; }
+    .rfloat { float:right; margin-left:0.5em; }
+a.varlink { text-decoration:none; }
+
+--></style>
+  <script type="text/javascript" src="http://cours-info.iut-bm.univ-fcomte.fr/wiki/pub/LaTeXMathML/LaTeXMathML.js"> </script>
+<script type="text/javascript">
+function toggle(obj) {
+    var elstyle = document.getElementById(obj).style;
+    var text    = document.getElementById(obj + "tog");
+    if (elstyle.display == 'none') {
+        elstyle.display = 'block';
+        text.innerHTML = "hide";
+    } else {
+        elstyle.display = 'none';
+        text.innerHTML = "show";
+    }
+}
+</script>  <meta name='robots' content='index,follow' />
+
+
+
+	<style type="text/css" media="screen">
+		@import url( http://cours-info.iut-bm.univ-fcomte.fr/wiki/pub/skins/newspaper/newspaper.css );
+		@import url( http://cours-info.iut-bm.univ-fcomte.fr/wiki/pub/skins/newspaper/commentbox.css );
+	</style>
+
+	<link rel='alternate' title='WikiMath RSS' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Site/AllRecentChanges?action=rss' type='text/xml' />
+	<link rel='icon' type='image/gif' href='/favicon.ico' />
+	<link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+
+<body>
+<div id="wrapper">
+<div id="header">
+<h1>WikiMath</h1>
+<h2 class="slogan">Des mathematiques, du Prolog, et du Python</h2>
+</div>
+
+
+
+<div id="column1">
+<h3 class="time">15 nov. 2015</h3>
+<p class='sidehead'> Wiki
+</p>
+<div class='vspace'></div><ul><li><a class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/MonWiki/Accueil'>Accueil</a>
+</li><li><a class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/TP'>Groupe</a>
+</li></ul><p class='vspace sidehead'> Python
+</p><ul><li><a class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Savoir/Python'>Général</a>
+</li><li><a class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/ModulesPython/ModulesPython'>Modules</a>
+</li></ul><p class='vspace sidehead'> Aide
+</p><ul><li><a class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Aide/Police'>Polices MathML</a>
+</li></ul><p class='vspace'  style='text-align: right;'> <span style='font-size:83%'><a class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Site/SideBar?action=edit'>edit SideBar</a></span>
+</p>
+<div class='vspace'></div>
+
+<h3 class="sidehead"><a href="http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Site/Search">Rechercher</a></h3>
+<form  class='wikisearch' action='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/EigenFaces' method='get'>
+<ul>
+<li>
+	<input type='text' name='q' value='' size='12' />
+	<input type='hidden' name='action' value='search' />
+</li>
+</ul>
+</form>
+</div>
+
+<div id="column2">
+<h2><a href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/EigenFaces'>Eigen Faces</a></h2>
+<!--PageText-->
+<div id='wikitext'>
+<p>Ce TP s'inspire largement du <a class='urllink' href='http://uuu.enseirb.fr/~megret/Enseignement/Projets/PR205-S3-Eigenfaces/Projet%20S3%20Eigenfaces.doc' rel='nofollow'>TP de Rémi Megret</a>
+</p>
+<div class='vspace'></div><h2>Présentation générale</h2>
+<p>L'objectif de ce TP est de programmer la méthode d'identification de visages dite par "eigenfaces", proposée par <a class='urllink' href='http://www.cs.utexas.edu/users/grauman/courses/spring2007/395T/papers/turk_pentland_1991.pdf' rel='nofollow'>Turk et Pentland</a> en 1991. Cette méthode permet de reconnaître à la volée une personne sans s'intéresser à des caractéristiques particulières comme la couleur des yeux, la forme du visage, celle du nez...
+L'idée principale est de décrire chaque visage comme une combinaison de vecteurs. Ces vecteurs de base sont les <strong>eigenfaces</strong>. Ils sont calculés automatiquement comme étant ceux qui discriminent le mieux les visages dont on connait déjà les identifiants.
+</p>
+<p class='vspace'>Dans l'exemple ci-dessous, l'image la plus à gauche (yaleB13) est la somme 
+</p><dl><dd><ul><li>de la seconde image (moyenne de toutes les images) avec
+</li><li>-14.4 la troisième image (eigenface1)
+</li><li>5.4 la quatrième image (eigenface2)
+</li><li>0.3 la cinquième image (eigenface3)
+</li><li>3.4 la sixième image (eigenface4)
+</li><li>-0.1 la septième image (eigenface5)
+</li></ul></dd></dl><div class='vspace'></div><div><img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/face.png' alt='face' title='face' /> <img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/moy.png' alt='moyenne' title='moyenne' /> <img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/eig1.png' alt='eigenface 1' title='eigenface 1' /> <img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/eig2.png' alt='eigenface 2' title='eigenface 2' /> <img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/eig3.png' alt='eigenface 3' title='eigenface 3' /> <img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/eig4.png' alt='eigenface 4' title='eigenface 4' /> <img src='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/eig5.png' alt='eigenface 5' title='eigenface 5' /></div>
+<div class='vspace'></div><h3>Objectifs du TP</h3>
+<p>Ce qui suit est une méthode pas à pas permettant de développer un système capable de reconnaître avec une certaine fiabilité un visage d'une base de données de visages de références. Ceci 
+se fait en XXX étapes :
+</p><dl><dd><ol><li>Construire un sous-espace d'eigenfaces
+</li><li>Projection dans un sous-espace d'eigenfaces
+</li><li>Identification de l'image grâce aux projetés
+</li></ol></dd></dl><div class='vspace'></div><h3>Outils à télécharger</h3>
+<p>Le TP s'appuie sur un <a class='urllink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/fichiers/TP/croppedyalle.tgz' rel='nofollow'>extrait</a> de la base de visages de Yale. La première étape consiste à récupérer ce fichier, le décompresser et le parcourir.
+</p>
+<div class='vspace'></div><h3>De l'image au vecteurs de flottants</h3>
+<p>Le dossier contient <span>$m=38$</span> visages éclairés différemment, pris sous des angles légèrement différents. Les visages de base sont ceux dont le suffixe est "_P00A+000E+00.pgm". On note que tous les images ont une taille de 64 lignes et 56 colonnes soit <span>$n=3584$</span> pixels. 
+</p>
+<p class='vspace'>Dans la suite par soucis de cohérence
+</p><dl><dd><ul><li>une image est toujours mémorisée comme un vecteur à une colonne et 3584 lignes. 
+</li><li>le vecteur <span>$I_{\textit{moy}}$</span> est la moyenne de <span>$I_1$</span>,<span>$\ldots$</span>, <span>$I_m$</span>. Il représente le visage moyen parmi les visage déjà identifiés. 
+</li><li>un ensemble de <span>$m$</span> images est toujours mémorisé comme une matrice 
+</li></ul></dd></dl><p>de <span>$m$</span> colonnes où chaque colonne est un vecteur représentant une image.   
+Ainsi l'ensemble des visages de base est la matrice <span>$I=\left[ I_1,\ldots,I_m\right]$</span> de taille <span>$n\times m$</span> 
+</p>
+<div class='vspace'></div><h2>Construire un sous-espace d'eigenfaces</h2>
+<h3>Travaux pratiques préliminaires</h3>
+<dl><dd><ol><li>Construire la matrice <span>$I$</span> de tous les visages dont le dont le suffixe est "_P00A+000E+00.pgm".
+</li><li>Construire le vecteur <span>$I_{\textit{moy}}$</span> et l'afficher.
+</li></ol></dd></dl><div class='vspace'></div><h3>Construire le vecteur d'eigenfaces</h3>
+<p>A l'origine, les eigenfaces sont les axes principaux obtenus en effectuant <a class='urllink' href='http://wikipedia/ACP' rel='nofollow'>l'Analyse en Composantes Principales</a> des vecteurs associés aux visages de référence.
+</p>
+<p class='vspace'>Théoriquement, les eigenfaces sont les vecteurs propres de la matrice de <span>$A.A^{T}$</span>, de taille <span>$n\times n$</span>, où la matrice <span>$A$</span> de même taille que <span>$I$</span> représente l'ensemble des visages centrés : <span>$A = \left[ I_1-I_{\textit{moy}}, \ldots, Im-I_{\textit{moy}} \right]$</span>
+Intuitivement, les eigenfaces sont les vecteurs qui permettent de séparer au mieux les colonnes de <span>$A$</span> par projection.
+</p>
+<div class='vspace'></div><dl><dd><ol><li>Construire la matrice <span>$A$</span>.
+</li><li>La fonction <strong>numpy.linalg.svd(A, full_matrices=0)</strong> retourne 
+</li></ol></dd></dl><p><span>$(u,s,v)$</span> où 
+</p><dl><dd><ul><li>les <span>$s$</span> sont les valeurs propres classées par ordre décroissant   
+</li><li>les <span>$u$</span> sont les vecteurs propres associées à ces valeurs propres
+</li><li><span>$v$</span> est une matrice dont on ne se sert pas.
+</li></ul></dd></dl><p>Exploiter cette fonction pour retourner les 5 première eigenfaces. 
+</p><dl><dd><ol><li>Afficher les cinq premières eigenfaces
+</li></ol></dd></dl><div class='vspace'></div><h2>Projection dans un sous-espace d'eigenfaces</h2>
+<h3>Formalisation </h3>
+<p>On construit la base <span>$W_K = \left[ U_1,\ldots,U_K \right]$</span> des <span>$K$</span>, <span>$1\le K \lem$</span>,  premières eigenfaces. Ceci permet de construire un <strong>sous espace des visages</strong>.
+</p>
+<p class='vspace'>La projection d'une image <span>$I$</span> de test dans le sous-espace des eigenfaces se fait en soustrayant le visage moyen et en effectuant le produit scalaire de l'image obtenue avec chaque eigenface. 
+Ceci donne les coordonnées de l'image test dans le sous-espace des visages, qui est de dimension <span>$K$</span>. Ainsi pour chaque <span>$k$</span>, <span>$ 1 \le k \le  K $</span>, on a 
+<span>$ c_I(k) = U_k^T . (I – I_{\textit{moy}})$</span>
+</p>
+<p class='vspace'>Chaque visage possède donc deux représentations :
+</p><dl><dd><ul><li>son image d'origine, représenté par un vecteur <span>$I $</span> dans <span>$\{0,1,\ldots,255 \}^{n}$</span>;
+</li><li>ses coordonnées <span>$\left[ c_I(1),\ldots, c_I(K) \right]$</span> dans la base des eigenfaces;   
+</li><li>son image projetée dans le sous-espace des visages, <span>$I^{\textit{proj}}$</span> définie par <span>$I^{\textit{proj}} = I_{\textit{moy}} + \sum_{k= 1}^K c_I(k) U_k$</span> 
+</li></ul></dd></dl><p class='vspace'>Ainsi, avec <span>$m$</span> visages, nommés <span>$I_1, \ldots, I_m$</span>, avec la matrice <span>$A=\left[I_1-I_{\textit{moy}},\ldots, I_m-I_{\textit{moy}}\right]$</span> qui représente les <span>$m$</span> visages centrés, on obtient les coordonnées <span>$C_{I1},\ldots, C_{Im}$</span> directement en effectuant le produit <span>$\left[C_{I1}, \ldots, C_{Im}\right] = W^T.A$</span>
+</p>
+<div class='vspace'></div><h3>Travaux pratiques</h3>
+<dl><dd><ol><li>On considère <span>$K=5$</span>. On a donc 5 eigenfaces. Chaque image va donc être être réduite à 5 coordonnées. Calculer la matrice des coefficients <span>$C_I$</span> <span>$ [C_{I1},\ldots,C_m] $</span>   
+</li></ol></dd></dl><div class='vspace'></div><h2>Identification</h2>
+<div class='vspace'></div><h3>Formalisation </h3>
+<p>A chaque visage de référence <span>$I_k$</span> est associée une identité, sous la forme d'un numéro <span>$\textit{id}(k)$</span>. 
+</p>
+<p class='vspace'>Nous chercherons maintenant à identifier un visage test <span>$J$</span> à partir des visages de référence, c'est à dire à trouver quel est l'identité <span>$\textit{id}(k)$</span> de <span>$J$</span>.
+Pour cela, on calcule pour chaque image de référence <span>$I_k$</span>
+la distance <span>$d(J,I_k) = ||J^{\textit{proj}} - I_k^{\textit{proj}}||$</span>  entre les projections <span>$J^{\textit{proj}}$</span> et <span>$I_k^{\textit{proj}}$</span>.
+On trouve ensuite le <span>$k$</span> qui minimise cette distance. 
+</p>
+<p class='vspace'>Si ce minimum est inférieure à un seuil <span>$s$</span> , on peut estimer qu'il s'agit d'un visage reconnu d'identité <span>$\textit{id}(k)$</span>, sinon le visage est classifié comme inconnu. 
+</p>
+<div class='vspace'></div><h3>Travaux pratiques</h3>
+<p>Dans ce qui suit, on considère que <span>$K=5$</span>.
+</p><dl><dd><ol><li>Mémoriser pour chaque <span>$k$</span> entre 0 et 37 son identité, c.-à-d. le nom du fichier associé
+</li><li>Implanter la fonction <strong>d(J)</strong> qui prend en paramètre un visage <span>$J$</span> 
+<ol><li>qui calcule le <span>$d(J,I_k)$</span> donné ci dessous pour tous les <span>$k$</span> entre 0 et 37
+</li><li>qui en déduis le minimum
+</li><li>retourne le minimum ainsi que l'indice <span>$k$</span> ayant généré ce minimum.
+</li></ol></li></ol></dd></dl><div class='vspace'></div>
+</div>
+
+</div>
+
+<div id="column3">
+<h3 class="sidehead"><a href="http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Site/PageActions">Actions</a></h3>
+<ul><li class='browse'>      <a accesskey=''  rel='nofollow'  class='selflink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/EigenFaces'>Vue</a>
+</li><li class='edit'>      <a accesskey='e'  rel='nofollow'  class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/EigenFaces?action=edit'>Éditer</a>
+</li><li class='diff'>   <a accesskey='h'  rel='nofollow'  class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/EigenFaces?action=diff'>Historique</a>
+</li><li class='print'>     <a accesskey=''  rel='nofollow'  class='wikilink' href='http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/EigenFaces?action=print'>Imprimer</a>
+</li></ul>
+
+<h3 class="sidehead">Changements récents</a></h3>
+<ul>
+<li><a href="http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/Site/ToutesLesModifs">Site</a></li>
+<li><a href="http://cours-info.iut-bm.univ-fcomte.fr/wiki/pmwiki.php/TP/ModifsDuGroupe">Groupe</a></li>
+</ul>
+</div>
+
+<div id="footer">
+<p>
+Wiki pédagogique réalisé par Christophe Guyeux et Jean-François Couchot<br/ >
+Avec la participation de Laurence Pilard, Karine Deschinkel, Michel Salomon, André Turberg et Husam Alustwani <br />
+Dernière modification : 30/11/2012 13:41 <br />
+Design <a href="http://theundersigned.net">theundersigned</a> | mod par CarlosAB <br />
+Powered by PmWiki</p>
+</div>
+
+</div>
+</body>
+</html>

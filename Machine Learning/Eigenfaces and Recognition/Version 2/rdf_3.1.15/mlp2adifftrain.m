@@ -1,0 +1,385 @@
+function [W1,B1,W2,B2,L,LR] = mlp2adifftrain(Base1, Base2, TargetDiff, W1, B1, W2, B2, lr, n, err_glob, freqplot)
+%
+% MLP2ADIFFTRAIN
+%
+% SYNTAXE :
+%
+% [W1,B1,W2,B2,L,LR]=mlp2adifftrain(Base1, Base2, TargetDiff, W1, B1, W2, B2 [, lr, n, err_glob] [, freqplot]);
+%
+% Apprentissage des poids d'un Percepteron MultiCouche Différentiel par
+% l'algorithme de rétropropagation (gradient total) et pas
+% d'apprentissage adaptatif.
+%
+% ARGUMENTS :
+%
+% Base1   		: matrice des échantillons 1 de la base d'apprentissage
+% Base2   		: matrice des échantillons 2 de la base d'apprentissage
+% TargetDiff 	: matrice des distances désirées élevées au carré
+% W1, B1 		: poids et seuils de la première couche
+% W2, B2 		: poids et seuils de la deuxième couche
+% lr     		: [optionnel] vecteur pas d'apprentissage adaptatif :
+%					 		lr = [lr0 lr_dec, lr_inc, delta]
+%          		lr0    : pas d'apprentissage initial
+%          		lr_dec : valeur d'incrément du pas
+%          		lr_inc : valeur de décrément du pas
+%          		err_ratio : seuil de déclenchement du décrément
+%
+% n      		: [optionnel] nombre maximum d'itérations d'apprentissage
+% err_glob 		: [optionnel] critère d'arret - seuil erreur quadratique minimum
+% freqplot		: [optionnel] fréquence d'affichage, par défaut : pas d'affichage
+%
+%
+% VALEURS DE RETOUR :
+%
+% W1, B1, W2, B2 	: les poids calculés à l'issue de l'apprentissage
+% L              	: coût quadratique
+% LR					: valeurs du pas adaptatif
+%
+% DESCRIPTION :
+%
+% L'argument 'freqplot' est optionnel : s'il n'est pas donné, il n'y a pas
+% d'affichage. S'il est donné, sa valeur donne le fréquence d'affichage
+% de l'erreur quadratique et du pas adaptatif.
+% Les arguments lr, n, et err_glob sont également optionnels en bloc. S'ils ne sont
+% pas donnés, la fonction interroge l'utilisateur.
+%
+% COMPATIBILITE :
+%
+%  Matlab 5.3+
+%
+
+% Bruno Gas - ISIR/UPMC
+% Création : 9 mars 2013
+% Version : 1.0
+% Derniere révision : 
+% -
+
+
+% Algorithme :
+%
+%	voir mlp2atrain 
+%
+
+%-----------------------------------------
+% OPTIONS :
+%
+% pour tenir compte de la dérivée exacte :
+derive_exact = true;
+
+% température :
+temperature = true;
+ampBruit = 0.01;
+b_inc = 1.5;
+b_dec = 0.5;
+%-----------------------------------------
+
+% controle des arguments :
+%-------------------------
+
+if (nargin<10 || nargin>11) && nargin~=7 && nargin ~=8
+   error('[MLP2ADIFFTRAIN] Usage : [W1,B1,W2,B2,L,LR] = mlp2adifftrain(Base1, Base2, TargetDiff, W1, B1, W2, B2 [, lr, n, err_glob] [, freqplot])');
+end;
+
+if nargin==7 || nargin==10, graph_mode = 0; freqplot = n+1;	% pas d'affichage par défaut
+else graph_mode = 1;
+   if nargin==8, freqplot = lr; end;                        % arg N. 7 = freq. d'affichage   
+end;
+
+if nargin<10
+   disp('MLP2ADIFFTRAIN : Paramètres de l''apprentissage');
+   n         = input('Nombre d''itérations d''apprentissage (1000) = ');
+   err_glob  = input('Erreur minimale (critère d''arrêt) (0.001) = ');
+   lr0       = input('Pas initial d''apprentissage (1) = ');
+   lr_dec    = input('Décrément du pas (0.9) = ');
+   lr_inc    = input('Incrément du pas (1.1) = ');
+   err_ratio = input('Plage de stabilité du pas (1) = ');
+      
+   lr = [lr0 lr_dec, lr_inc, err_ratio];
+elseif length(lr) ~= 4
+   error('[MLP2ADIFFTRAIN] Arguments <lr> incorrecte (lr=[lr0, lr_dec, lr_inc, delta]'); 
+end;
+
+% Initialisation graphique :
+%---------------------------
+if graph_mode==1, clf; hold off;	end;
+
+
+% nb. total d'exemples à apprendre :
+%---------------------------------------
+[input_nbr ex_nbr] = size(Base1);
+
+
+% --- cohérence des arguments :
+[n_cell n_in] = size(W1);
+[output_nbr n_ex] = size(TargetDiff);
+
+if size(Base2, 1)~=input_nbr
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : Base1 et Base2 (nombre d''entrées)'); end;
+if size(Base2, 2)~=ex_nbr
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : Base1 et Base2 (dimension des exemples)'); end;
+if n_ex~=ex_nbr
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : Base1 et TargetDiff (dimension des exemples)'); end;
+if input_nbr~=n_in
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : W1 et Data'); end;
+if size(B1)~=[n_cell 1]
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : W1 et B1'); end;
+if size(W2)~=[output_nbr n_cell]
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : W2 et Class'); end;
+if size(B2)~=[output_nbr 1]
+  error('[MLP2ADIFFTRAIN] Défaut de cohérence dans les arguments : W2 et B2'); end;
+
+
+% pas adaptatif :
+%----------------
+lr0 = lr(1);			% valeur initiale du pas
+lr_dec = lr(2);			% décrément du pas
+lr_inc = lr(3);			% incrément du pas
+err_ratio = lr(4);		% seuil de déclenchement du décrément
+
+% --- fonction cout quadratique :
+L = zeros(1,n);
+MaxL = ex_nbr*output_nbr;
+
+% Normalisations :
+%-----------------
+lr0 =lr0/MaxL;
+
+% --- initialisation du pas :
+lr = lr0;					
+LR = zeros(1,n);
+if (temperature)
+    Bruit = zeros(1,n);
+end;
+
+% --- Erreur en sortie :
+
+V11 = W1*Base1+B1*ones(1,ex_nbr);
+S11 = sigmo(V11);
+
+V21 = W2*S11+B2*ones(1,ex_nbr);
+S21 = sigmo(V21);
+%S21 = V21;
+
+V12 = W1*Base2+B1*ones(1,ex_nbr);
+S12 = sigmo(V12);
+
+V22 = W2*S12+B2*ones(1,ex_nbr);
+S22 = sigmo(V22);
+%S22 = V22;
+
+E_DeltaS = S22 - S21;
+%E = TargetDiff.^2 - E_DeltaS.^2;
+E = (TargetDiff - E_DeltaS).^2;
+if (derive_exact)
+    E_X = sum((Base2 - Base1).^2);
+end;
+
+% --- boucle d'apprentissage :
+for it=1:n
+
+% --- Cout quadratique :	
+    if (derive_exact)
+        L(it) = sum(sum(E)./E_X)/MaxL;
+    else
+        L(it) = sumsqr(E)/MaxL;
+    end;
+	LR(it) = lr;
+    if (temperature)    
+        Bruit(it) = ampBruit;
+    end;
+   
+% --- Affichage erreur et pas adaptatif :
+	if rem(it,freqplot)==0   	   
+
+        if (temperature)
+            subplot(311);
+        else
+            subplot(211);
+        end;
+        semilogy(0:it-1, L(1:it));
+        grid;
+        xlabel('Itérations d''apprentissage');
+        ylabel('Erreur quadratique');
+        title('MLP 2 couches : Coût quadratique');
+        if (temperature)
+            subplot(312);
+        else
+            subplot(212);
+        end; 
+        semilogy(0:it-1, LR(1:it));
+        grid;
+        xlabel('Itérations d''apprentissage');
+        ylabel('Valeur du pas adaptatif'); 
+        if (temperature)
+            subplot(313);
+            semilogy(0:it-1, Bruit(1:it));
+            grid;
+           xlabel('Itérations d''apprentissage');
+          ylabel('Valeur du bruit'); 
+        end;
+        
+%         plot3(Base1, Base2, TargetDiff, 'g.');
+%         hold on;
+%         plot3(Base1, Base2, E_DeltaS.^2, 'r.');
+%         hold off;
+		drawnow;
+	end;
+
+% --- Critère d'arret :
+	if err_glob~=0 && L(it) <= err_glob
+		L = L(1:it);
+		LR = LR(1:it);
+		return;
+	end;	
+
+
+% --- Adaptation du pas d'apprentissage :
+  if it>1
+
+ 		if L(it) > TL*err_ratio
+
+% --- Fonction Coût croissante au dela du seuil :
+
+% --- Récupération des poids :
+			W1 = TW1; B1 = TB1; W2 = TW2; B2 = TB2;
+
+% --- décrémentation du pas et modif. des poids :
+			lr = lr*lr_dec;
+
+            W1 = W1 - lr*D1;
+		 	B1 = B1 - lr*(Delta11*ones(ex_nbr,1) + Delta12*ones(ex_nbr,1));
+		  	W2 = W2 - lr*D2;
+	 		B2 = B2 - lr*(Delta21*ones(ex_nbr,1) + Delta22*ones(ex_nbr,1));
+
+            if (temperature)
+                W1 = W1 + (rand(size(W1))*2-1)*ampBruit; 
+                B1 = B1 + (rand(size(B1))*2-1)*ampBruit; 
+                W2 = W2 + (rand(size(W2))*2-1)*ampBruit; 
+                B2 = B2 + (rand(size(B2))*2-1)*ampBruit; 
+            end;
+            
+        else
+
+% --- Fonction Coût décroissante :
+			if L(it) < TL	
+
+% --- incrémentation du lr :
+				lr = lr*lr_inc;
+                
+                if (temperature)
+                    ampBruit = ampBruit*b_dec;
+                end;
+            else
+                
+% --- Fonction Coût stable :
+                if (temperature)
+                    ampBruit = ampBruit*b_inc;
+                end;
+            end;
+
+% --- rétropropagation :
+
+%            DE = 4*E_DeltaS.*E;
+            if (derive_exact)
+                DE = 2*(TargetDiff-E_DeltaS)./(ones(output_nbr,1)*E_X);
+            else
+                DE = 2*(TargetDiff-E_DeltaS);
+            end;
+            
+            Delta21 = DE.*sigmop(V21);
+            Delta22 = -DE.*sigmop(V22);
+
+            D2 = Delta21*S11' + Delta22*S12';
+
+            Delta11 = (W2'*Delta21).*sigmop(V11);
+            Delta12 = (W2'*Delta22).*sigmop(V12);
+            
+            D1 = Delta11*Base1' + Delta12*Base2';
+
+% --- Sauvegarde des poids courants et modif. des poids :
+			TW1 = W1; TB1 = B1; TW2 = W2; TB2 = B2;
+			TL = L(it);
+
+ 	  		W1 = W1 - lr*D1;
+ 		 	B1 = B1 - lr*(Delta11*ones(ex_nbr,1) + Delta12*ones(ex_nbr,1));
+ 		  	W2 = W2 - lr*D2;
+ 	 		B2 = B2 - lr*(Delta21*ones(ex_nbr,1) + Delta22*ones(ex_nbr,1));
+            
+            if (temperature)
+                W1 = W1 + (rand(size(W1))*2-1)*ampBruit; 
+                B1 = B1 + (rand(size(B1))*2-1)*ampBruit; 
+                W2 = W2 + (rand(size(W2))*2-1)*ampBruit; 
+                B2 = B2 + (rand(size(B2))*2-1)*ampBruit; 
+            end;
+        end
+	else
+
+% --- 1ere itération : pas de modification du lr :
+
+% --- rétropropagation :
+
+%        DE = 4*E_DeltaS.*E;
+        if (derive_exact)
+            DE = 2*(TargetDiff-E_DeltaS)./(ones(output_nbr,1)*E_X);
+        else
+            DE = 2*(TargetDiff-E_DeltaS);
+        end;
+
+        Delta21 = DE.*sigmop(V21);
+        Delta22 = -DE.*sigmop(V22);
+
+        D2 = Delta21*S11' + Delta22*S12';
+
+        Delta11 = (W2'*Delta21).*sigmop(V11);
+        Delta12 = (W2'*Delta22).*sigmop(V12);
+            
+        D1 = Delta11*Base1' + Delta12*Base2';
+
+% --- Sauvegarde des poids courants :
+		TW1 = W1; TB1 = B1; TW2 = W2; TB2 = B2;
+		TL = L(it);
+
+% --- Modif. des poids :
+	  	
+        W1 = W1 - lr*D1;
+ 		B1 = B1 - lr*(Delta11*ones(ex_nbr,1) + Delta12*ones(ex_nbr,1));
+ 		W2 = W2 - lr*D2;
+ 	 	B2 = B2 - lr*(Delta21*ones(ex_nbr,1) + Delta22*ones(ex_nbr,1));        
+
+        if (temperature)
+            W1 = W1 + (rand(size(W1))*2-1)*ampBruit; 
+            B1 = B1 + (rand(size(B1))*2-1)*ampBruit; 
+            W2 = W2 + (rand(size(W2))*2-1)*ampBruit; 
+            B2 = B2 + (rand(size(B2))*2-1)*ampBruit; 
+        end;
+	end
+
+% --- erreur en sortie :
+
+    V11 = W1*Base1+B1*ones(1,ex_nbr);
+    S11 = sigmo(V11);
+
+    V21 = W2*S11+B2*ones(1,ex_nbr);
+    S21 = sigmo(V21);
+    %S21 = V21;
+
+    V12 = W1*Base2+B1*ones(1,ex_nbr);
+    S12 = sigmo(V12);
+
+    V22 = W2*S12+B2*ones(1,ex_nbr);
+    S22 = sigmo(V22);
+    %S22 = V22;
+
+    E_DeltaS = S22 - S21;
+%    E = TargetDiff.^2 - E_DeltaS.^2;	
+    E = (TargetDiff - E_DeltaS).^2; 
+
+end; %it
+
+
+% Dénormalisation :
+%------------------
+LR = LR*MaxL;
+
+
+
